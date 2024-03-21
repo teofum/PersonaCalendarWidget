@@ -1,5 +1,6 @@
 package com.example.personacalendarwidget;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -16,6 +17,7 @@ import androidx.work.WorkManager;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,6 +25,16 @@ import java.util.concurrent.TimeUnit;
  */
 public class CalendarWidget extends AppWidgetProvider {
     private static final String SYNC_CLICKED = "automaticWidgetSyncButtonClick";
+
+    @SuppressLint("DiscouragedApi")
+    private static int getDrawableId(Context context, String name) {
+        return context.getResources().getIdentifier(
+                name,
+                "drawable",
+                context.getPackageName()
+        );
+    }
+
 
     // Returns a string representing the rough time of day based on the hour
     static String getTimeOfDayString(int hour) {
@@ -35,9 +47,9 @@ public class CalendarWidget extends AppWidgetProvider {
         return "latenight";
     }
 
-    static PendingIntent getPendingSelfIntent(Context context, String action) {
+    static PendingIntent getPendingSelfIntent(Context context) {
         Intent intent = new Intent(context, CalendarWidget.class);
-        intent.setAction(action);
+        intent.setAction(CalendarWidget.SYNC_CLICKED);
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
     }
 
@@ -51,46 +63,44 @@ public class CalendarWidget extends AppWidgetProvider {
         LocalDateTime now = LocalDateTime.now();
         String month = now.format(DateTimeFormatter.ofPattern("M"));
         String day = now.format(DateTimeFormatter.ofPattern("d"));
-        String weekday = now.format(DateTimeFormatter.ofPattern("EEEE", Locale.ENGLISH)).toLowerCase();
+        String weekday = now.format(DateTimeFormatter.ofPattern("EEEE", Locale.ENGLISH))
+                .toLowerCase();
+
         int hour = now.getHour();
         String time = getTimeOfDayString(hour);
 
         // Get the image resources and set ImageView
         // Month
-        int month0 = context.getResources().getIdentifier(String.format("month_%s_0", month), "drawable", context.getPackageName());
-        int month1 = context.getResources().getIdentifier(String.format("month_%s_1", month), "drawable", context.getPackageName());
-        int month2 = context.getResources().getIdentifier(String.format("month_%s_2", month), "drawable", context.getPackageName());
+        int month0 = getDrawableId(context, String.format("month_%s_0", month));
+        int month1 = getDrawableId(context, String.format("month_%s_1", month));
+        int month2 = getDrawableId(context, String.format("month_%s_2", month));
         views.setImageViewResource(R.id.month_0, month0);
         views.setImageViewResource(R.id.month_1, month1);
         views.setImageViewResource(R.id.month_2, month2);
 
         // Day
-        int day0 = context.getResources().getIdentifier(String.format("day_%s_0", day), "drawable", context.getPackageName());
-        int day1 = context.getResources().getIdentifier(String.format("day_%s_1", day), "drawable", context.getPackageName());
-        int day2 = context.getResources().getIdentifier(String.format("day_%s_2", day), "drawable", context.getPackageName());
+        int day0 = getDrawableId(context, String.format("day_%s_0", day));
+        int day1 = getDrawableId(context, String.format("day_%s_1", day));
+        int day2 = getDrawableId(context, String.format("day_%s_2", day));
         views.setImageViewResource(R.id.day_0, day0);
         views.setImageViewResource(R.id.day_1, day1);
         views.setImageViewResource(R.id.day_2, day2);
 
         // Weekday
-        int weekday0 = context.getResources().getIdentifier(String.format("weekday_%s_0", weekday), "drawable", context.getPackageName());
-        int weekday1 = context.getResources().getIdentifier(String.format("weekday_%s_1", weekday), "drawable", context.getPackageName());
-        int weekday2 = context.getResources().getIdentifier(String.format("weekday_%s_2", weekday), "drawable", context.getPackageName());
+        int weekday0 = getDrawableId(context, String.format("weekday_%s_0", weekday));
+        int weekday1 = getDrawableId(context, String.format("weekday_%s_1", weekday));
+        int weekday2 = getDrawableId(context, String.format("weekday_%s_2", weekday));
         views.setImageViewResource(R.id.weekday_0, weekday0);
         views.setImageViewResource(R.id.weekday_1, weekday1);
         views.setImageViewResource(R.id.weekday_2, weekday2);
 
         // Time
-        int timeResource = context.getResources().getIdentifier(String.format("time_%s", time), "drawable", context.getPackageName());
+        int timeResource = getDrawableId(context, String.format("time_%s", time));
         views.setImageViewResource(R.id.time, timeResource);
 
-        // Debug time string
-//        String debug = now.format(DateTimeFormatter.ofPattern("HH:mm:ss M/d EEEE"));
-//        views.setTextViewText(R.id.debugText, debug);
-
         // Set a pending intent to detect touch event
-        ComponentName watchWidget = new ComponentName(context, CalendarWidget.class.getName());
-        views.setOnClickPendingIntent(R.id.time, getPendingSelfIntent(context, SYNC_CLICKED));
+//        ComponentName watchWidget = new ComponentName(context, CalendarWidget.class.getName());
+        views.setOnClickPendingIntent(R.id.time, getPendingSelfIntent(context));
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -101,9 +111,13 @@ public class CalendarWidget extends AppWidgetProvider {
         super.onReceive(context, intent);
         Log.d("Widget", "onReceive");
 
-        if (intent.getAction().equals(SYNC_CLICKED)) {
+        if (Objects.equals(intent.getAction(), SYNC_CLICKED)) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            ComponentName widgetComponentName = new ComponentName(context.getPackageName(), CalendarWidget.class.getName());
+            ComponentName widgetComponentName = new ComponentName(
+                    context.getPackageName(),
+                    CalendarWidget.class.getName()
+            );
+
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(widgetComponentName);
             for (int appWidgetId : appWidgetIds) {
                 updateAppWidget(context, appWidgetManager, appWidgetId);
