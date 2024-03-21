@@ -1,0 +1,85 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.PersonaCalendarWidget.AppWidget.Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00ED00FF"
+    android:padding="0dp"
+    android:theme="@style/Theme.PersonaCalendarWidget.AppWidgetContainer">
+
+    <ImageView
+        android:id="@+id/month_0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="10dp"
+        android:translationY="-5dp"
+        app:srcCompat="@drawable/month_8_0" />
+
+    <ImageView
+        android:id="@+id/day_0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/day_17_0" />
+
+    <ImageView
+        android:id="@+id/weekday_0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="-30dp"
+        android:translationY="-5dp"
+        app:srcCompat="@drawable/weekday_friday_0" />
+
+    <ImageView
+        android:id="@+id/month_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="10dp"
+        android:translationY="-5dp"
+        app:srcCompat="@drawable/month_8_1" />
+
+    <ImageView
+        android:id="@+id/day_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/day_17_1" />
+
+    <ImageView
+        android:id="@+id/weekday_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="-30dp"
+        android:translationY="-5dp"
+        app:srcCompat="@drawable/weekday_friday_1" />
+
+    <ImageView
+        android:id="@+id/month_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="10dp"
+        android:translationY="-5dp"
+        app:srcCompat="@drawable/month_8_2" />
+
+    <ImageView
+        android:id="@+id/day_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/day_17_2" />
+
+    <ImageView
+        android:id="@+id/weekday_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="-30dp"
+        android:translationY="-5dp"
+        app:srcCompat="@drawable/weekday_friday_2" />
+
+    <ImageView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="-7dp"
+        android:translationY="-5dp"
+        app:srcCompat="@drawable/time_morning" />
+
+</RelativeLayout>
